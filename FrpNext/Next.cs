@@ -19,6 +19,15 @@ namespace FrpNext
     {
         internal int time;
         public abstract void Dispose();
+
+        public static Next<T> Delay<T>(Func<T> create)
+        {
+            return new Next<T>(create);
+        }
+        public static T Fix<T>(Func<Next<T>, T> extract)
+        {
+            return extract(Delay(() => Fix(extract)));
+        }
     }
 
     public class Next<T> : Next
@@ -37,12 +46,12 @@ namespace FrpNext
 
         public Next<T1> Select<T1>(Func<T, T1> selector)
         {
-            return Runtime.Delay(() => selector(this.Force()));
+            return Delay(() => selector(this.Force()));
         }
 
         public Next<Tuple<T, T1>> Zip<T1>(Next<T1> other)
         {
-            return Runtime.Delay(() => Tuple.Create(this.Force(), other.Force()));
+            return Delay(() => Tuple.Create(this.Force(), other.Force()));
         }
 
         public override void Dispose()
@@ -66,17 +75,9 @@ namespace FrpNext
         {
             return Tuple.Create(next.Select(x => x.Item1), next.Select(x => x.Item2));
         }
-        public static T Fix<T>(Func<Next<T>, T> extract)
-        {
-            return extract(Delay(() => Fix(extract)));
-        }
         public static Next<T1> Apply<T0, T1>(this Next<Func<T0, T1>> func, Next<T0> arg0)
         {
-            return Delay(() => func.Force()(arg0.Force()));
-        }
-        public static Next<T> Delay<T>(Func<T> create)
-        {
-            return new Next<T>(create);
+            return Next.Delay(() => func.Force()(arg0.Force()));
         }
 
         // runtime

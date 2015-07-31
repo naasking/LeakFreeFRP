@@ -62,5 +62,13 @@ namespace FrpNext
                 return new Event<T2> { wait = wait.Select(x => x.SelectMany(selector, result)) };
             }
         }
+
+        public Event<T0> Join(Event<T0> other)
+        {
+            var x = this;
+            return x.HasValue     ? x:
+                   other.HasValue ? other:
+                                    new Event<T0> { wait = Next.Delay(() => x.Join(other)) };
+        }
     }
 }
