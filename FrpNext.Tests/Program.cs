@@ -10,7 +10,7 @@ namespace FrpNext.Tests
     {
         static Stream<int> Ints(int n)
         {
-            return Streams.Unfold(i => Tuple.Create(i, Next.Delay(() => i + 1)), n);
+            return Streams.Generate(i => Tuple.Create(i, Next.Delay(() => i + 1)), n);
         }
         static void Run(int k, Stream<int> xs)
         {
