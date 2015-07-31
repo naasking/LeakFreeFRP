@@ -36,6 +36,7 @@ namespace FrpNext
                 return Wait;
             }
         }
+
         public Event<T1> Select<T1>(Func<T0, T1> selector)
         {
             return HasValue ? new Event<T1> { now = selector(now) }:
@@ -68,7 +69,7 @@ namespace FrpNext
             var x = this;
             return x.HasValue     ? x:
                    other.HasValue ? other:
-                                    new Event<T0> { wait = Next.Delay(() => x.Join(other)) };
+                                    new Event<T0> { wait = Next.Delay(() => x.wait.Force().Join(other.wait.Force())) };
         }
     }
 }
