@@ -24,10 +24,6 @@ namespace FrpNext
         {
             return new Next<T>(create);
         }
-        public static T Fix<T>(Func<Next<T>, T> extract)
-        {
-            return extract(Delay(() => Fix(extract)));
-        }
     }
 
     public class Next<T> : Next
