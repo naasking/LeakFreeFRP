@@ -1,4 +1,4 @@
-# Leak-Free Functional Reactive Programming (FRP) in C\#
+# Leak-Free Functional Reactive Programming (FRP)
 
 This is a C# implementation of Neelakantan Krishnaswami's simple, leak-free FRP interface:
 
